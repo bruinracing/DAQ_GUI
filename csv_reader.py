@@ -9,7 +9,7 @@ def read_csv_file(filename):
 		for row in filereader:
 			for i in range(0, len(row)):
 				data_list.append(list())
-				title_list.append(row[i])
+				title_list.append(row[i].strip())
 			break
 		for row in filereader: 
 			for i in range(0, len(row)):
