@@ -54,6 +54,7 @@ class Graph_Page:
 	def action_2():
 		print("pressed button_2")
 	def select_file(self):
+		print("SELECT_FILE")
 		filename = QFileDialog.getOpenFileName(self.data_tab, 'Open File', 'C:/')
 		if (filename == ""):
 			#valid_file = 0
@@ -61,21 +62,26 @@ class Graph_Page:
 			ax.clear()
 			ax.set_title("NO FILE SELECTED")
 		else:
+			print("READ: "+filename)
 			#valid_file = 1
 			csv_tup = csv_reader.read_csv_file(filename)
 			self.data = csv_tup[1]
 			self.titles = csv_tup[0]
-			print("data: "+str(self.data))
-			print("titles: "+str(self.titles))
-			print("ts: " +str(self.data[0]))
+			#print("data: "+str(self.data))
+			#print("titles: "+str(self.titles))
+			#print("ts: " +str(self.data[0]))
 			for i in range(0, len(self.data)):  #creates list of np_arrays
 				self.np_data.append(np.array(self.data[i]))
 			self.ts = self.np_data[0] #timestamp list
 			self.datum_num = len(self.data) -1 # -1 to compensate for ts data
-			print("datum_num: "+str(self.datum_num))
 			edge = math.ceil(math.sqrt(self.datum_num))
 			plot_val = edge*100 + edge*10
 
+			#clear old axes
+			for ax in self.prev_ax:
+				ax.cla()
+			self.prev_ax.clear()
+			self.figure.clear()
 			#make graphs
 			for i in range(1, self.datum_num+1):
 			#x = np.arange(0, np_data[i].size, 1)
@@ -92,6 +98,7 @@ class Graph_Page:
 		print("remove checkboxes")
 		#remove old checkboxes
 		for checkbox in self.check_box_list:
+			checkbox.setParent(None)
 			self.layout_two.removeWidget(checkbox)
 		self.check_box_list.clear() 
 		self.checked_list = [0]
@@ -108,6 +115,7 @@ class Graph_Page:
 		print("select datum_num: "+str(self.datum_num))
 
 	def update_display(self):
+		print("UPDATE_DISPLAY")
 		print("datum_num2: "+str(self.datum_num))
 		print("update display")
 		self.checked_list = [0]
@@ -128,6 +136,7 @@ class Graph_Page:
 		print("datum_num"+str(self.datum_num))
 		for ax in self.prev_ax:
 			ax.cla()
+		self.prev_ax.clear()
 		self.figure.clear()
 		for i in range(1, self.datum_num+1):
 			if(self.checked_list[i]):
@@ -138,6 +147,7 @@ class Graph_Page:
 				ax.clear()
 				ax.set_title(self.titles[i])
 				ax.plot(x, y)
+				self.prev_ax.append(ax)
 				print("redraw: "+str(self.titles[i]))
 		self.canvas.draw()
 
